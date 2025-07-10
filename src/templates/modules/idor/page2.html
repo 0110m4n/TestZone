@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}IDOR - Identification - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-key"></i> Module IDOR
+        </h1>
+        <h2 style="color: #ffffff;">2. Identification des vulnérabilités IDOR</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-search"></i> Méthodologie de test</h3>
+        <p>
+            Pour identifier les vulnérabilités IDOR, suivez cette approche systématique :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Identifier tous les paramètres qui référencent des objets</li>
+            <li>Créer plusieurs comptes de test</li>
+            <li>Tenter d'accéder aux ressources d'autres utilisateurs</li>
+            <li>Tester différents formats d'identifiants</li>
+            <li>Vérifier les contrôles d'autorisation</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-tools"></i> Techniques de test</h3>
+        <p>
+            Voici les principales techniques pour tester les IDOR :
+        </p>
+        <div class="code-block">
+// Test d'incrémentation séquentielle<br>
+/user/profile?id=1001<br>
+/user/profile?id=1002<br>
+/user/profile?id=1003<br><br>
+// Test avec différents formats<br>
+/api/users/123<br>
+/api/users/user123<br>
+/api/users/123.json<br><br>
+// Test avec encodage<br>
+/file?id=MTIz (base64 de "123")<br>
+/file?id=%31%32%33 (URL encode)
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-bug"></i> Outils de test</h3>
+        <p>
+            Plusieurs outils peuvent automatiser la détection d'IDOR :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>Burp Suite :</strong> Intruder et extensions IDOR</li>
+            <li><strong>OWASP ZAP :</strong> Scanner automatisé</li>
+            <li><strong>Autorize :</strong> Extension Burp pour tests d'autorisation</li>
+            <li><strong>Scripts personnalisés :</strong> Python, Bash</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/idor/page/1" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 2 sur 3
+        </div>
+        
+        <a href="/module/idor/page/3" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

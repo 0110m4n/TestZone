@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}IDOR - Prévention - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-key"></i> Module IDOR
+        </h1>
+        <h2 style="color: #ffffff;">3. Prévention des vulnérabilités IDOR</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-shield-alt"></i> Contrôles d'accès</h3>
+        <p>
+            La prévention de l'IDOR repose principalement sur la mise en place de contrôles d'accès appropriés :
+        </p>
+        <div class="code-block">
+// Exemple de vérification d'autorisation<br>
+function getUserProfile($userId, $currentUser) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Vérifier que l'utilisateur peut accéder à ce profil<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if ($userId !== $currentUser->id && !$currentUser->isAdmin()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new UnauthorizedException();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return User::find($userId);<br>
+}
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-random"></i> Références indirectes</h3>
+        <p>
+            Utilisez des références indirectes plutôt que des identifiants directs :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>UUID :</strong> Identifiants non séquentiels</li>
+            <li><strong>Tokens :</strong> Références temporaires</li>
+            <li><strong>Mapping :</strong> Table de correspondance</li>
+            <li><strong>Hashing :</strong> Identifiants hashés</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-cogs"></i> Bonnes pratiques</h3>
+        <p>
+            Implémentez ces mesures de sécurité :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Validation côté serveur systématique</li>
+            <li>Principe du moindre privilège</li>
+            <li>Logging des tentatives d'accès</li>
+            <li>Tests de sécurité réguliers</li>
+            <li>Formation des développeurs</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/idor/page/2" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 3 sur 3
+        </div>
+        
+        <a href="/module/idor/quiz" class="btn">
+            Quiz <i class="fas fa-question-circle"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

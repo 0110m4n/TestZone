@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Path Traversal - Protection - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-folder-open"></i> Module Path Traversal
+        </h1>
+        <h2 style="color: #ffffff;">3. Protection contre le Path Traversal</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-shield-alt"></i> Validation des entrées</h3>
+        <p>
+            La première ligne de défense consiste à valider rigoureusement toutes les entrées utilisateur :
+        </p>
+        <div class="code-block">
+// Exemple de validation en PHP<br>
+function validateFilename($filename) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Supprimer les caractères dangereux<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$filename = basename($filename);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Vérifier contre une whitelist<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$allowed = ['report.pdf', 'data.csv', 'image.jpg'];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (!in_array($filename, $allowed)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Exception('Fichier non autorisé');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return $filename;<br>
+}
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-lock"></i> Mesures de protection</h3>
+        <p>
+            Implémentez ces mesures pour prévenir les attaques path traversal :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>Chroot jail :</strong> Isoler l'application dans un répertoire</li>
+            <li><strong>Canonicalisation :</strong> Résoudre les chemins absolus</li>
+            <li><strong>Filtrage strict :</strong> Bloquer "../" et autres séquences</li>
+            <li><strong>Permissions minimales :</strong> Limiter l'accès aux fichiers</li>
+            <li><strong>Logging :</strong> Enregistrer les tentatives d'accès</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-code"></i> Exemple sécurisé</h3>
+        <p>
+            Voici un exemple de code sécurisé contre le path traversal :
+        </p>
+        <div class="code-block">
+// Code sécurisé<br>
+$basePath = '/var/www/uploads/';<br>
+$filename = basename($_GET['file']);<br>
+$fullPath = realpath($basePath . $filename);<br><br>
+// Vérifier que le fichier est dans le répertoire autorisé<br>
+if (strpos($fullPath, realpath($basePath)) !== 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;die('Accès refusé');<br>
+}<br><br>
+// Servir le fichier de manière sécurisée<br>
+readfile($fullPath);
+        </div>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/path_traversal/page/2" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 3 sur 3
+        </div>
+        
+        <a href="/module/path_traversal/quiz" class="btn">
+            Quiz <i class="fas fa-question-circle"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

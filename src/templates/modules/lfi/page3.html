@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}LFI - Protection et prévention - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-file-alt"></i> Module LFI
+        </h1>
+        <h2 style="color: #ffffff;">3. Protection et prévention du LFI</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-shield-alt"></i> Validation des entrées</h3>
+        <p>
+            La première ligne de défense consiste à valider et filtrer toutes les entrées utilisateur :
+        </p>
+        <div class="code-block">
+// Exemple de validation en PHP<br>
+$allowed_files = ['home', 'about', 'contact'];<br>
+$page = $_GET['page'];<br><br>
+if (in_array($page, $allowed_files)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include($page . '.php');<br>
+} else {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include('error.php');<br>
+}
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-lock"></i> Techniques de protection</h3>
+        <p>
+            Plusieurs mesures peuvent être mises en place pour prévenir le LFI :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>Whitelist :</strong> N'autoriser que des fichiers spécifiques</li>
+            <li><strong>Basename :</strong> Utiliser basename() pour supprimer les chemins</li>
+            <li><strong>Realpath :</strong> Résoudre les chemins absolus</li>
+            <li><strong>Open_basedir :</strong> Restreindre l'accès aux répertoires</li>
+            <li><strong>Disable functions :</strong> Désactiver les fonctions dangereuses</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-cog"></i> Configuration serveur</h3>
+        <p>
+            La configuration du serveur web peut également aider à prévenir le LFI :
+        </p>
+        <div class="code-block">
+; Configuration PHP<br>
+open_basedir = /var/www/html<br>
+allow_url_include = Off<br>
+allow_url_fopen = Off<br><br>
+; Désactiver les fonctions dangereuses<br>
+disable_functions = exec,passthru,shell_exec,system
+        </div>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/lfi/page/2" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 3 sur 3
+        </div>
+        
+        <a href="/module/lfi/quiz" class="btn">
+            Quiz <i class="fas fa-question-circle"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

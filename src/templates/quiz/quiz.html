@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz {{ module.name }} - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .question-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        display: none;
+    }
+
+    .question-card.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-number {
+        color: #00ff88;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .question-text {
+        font-size: 1.2rem;
+        color: #ffffff;
+        margin-bottom: 2rem;
+        line-height: 1.4;
+    }
+
+    .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .option {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .option:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #00ff88;
+    }
+
+    .option.selected {
+        background: rgba(0, 255, 136, 0.2);
+        border-color: #00ff88;
+        color: #ffffff;
+    }
+
+    .option.correct {
+        background: rgba(40, 167, 69, 0.3);
+        border-color: #28a745;
+        color: #ffffff;
+    }
+
+    .option.incorrect {
+        background: rgba(220, 53, 69, 0.3);
+        border-color: #dc3545;
+        color: #ffffff;
+    }
+
+    .quiz-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 2rem 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(45deg, #00ff88, #00cc6a);
+        transition: width 0.3s;
+        width: 0%;
+    }
+
+    .results-container {
+        display: none;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 3rem 2rem;
+    }
+
+    .score-display {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #00ff88;
+        margin-bottom: 1rem;
+    }
+
+    .score-message {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2rem;
+    }
+
+    .results-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .quiz-controls {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .results-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-question-circle"></i> Quiz {{ module.name }}
+        </h1>
+        <h2 style="color: #ffffff;">{{ module.description }}</h2>
+        <p style="color: rgba(255, 255, 255, 0.8); margin-top: 1rem;">
+            Testez vos connaissances avec ce quiz de {{ quizzes|length }} questions
+        </p>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressBar"></div>
+    </div>
+
+    <div id="quizContainer">
+        {% for quiz in quizzes %}
+        <div class="question-card" data-quiz-id="{{ quiz.id }}" data-correct="{{ quiz.correct_answer }}">
+            <div class="question-number">
+                Question {{ loop.index }} sur {{ quizzes|length }}
+            </div>
+            <div class="question-text">
+                {{ quiz.question }}
+            </div>
+            <div class="options-container">
+                <div class="option" data-answer="A">
+                    <strong>A.</strong> {{ quiz.option_a }}
+                </div>
+                <div class="option" data-answer="B">
+                    <strong>B.</strong> {{ quiz.option_b }}
+                </div>
+                <div class="option" data-answer="C">
+                    <strong>C.</strong> {{ quiz.option_c }}
+                </div>
+                <div class="option" data-answer="D">
+                    <strong>D.</strong> {{ quiz.option_d }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="quiz-controls">
+        <button id="prevBtn" class="btn btn-secondary" onclick="previousQuestion()" style="display: none;">
+            <i class="fas fa-arrow-left"></i> Précédent
+        </button>
+        
+        <div style="color: rgba(255, 255, 255, 0.8);">
+            <span id="currentQuestion">1</span> / {{ quizzes|length }}
+        </div>
+        
+        <button id="nextBtn" class="btn" onclick="nextQuestion()" disabled>
+            Suivant <i class="fas fa-arrow-right"></i>
+        </button>
+        
+        <button id="finishBtn" class="btn" onclick="finishQuiz()" style="display: none;" disabled>
+            Terminer <i class="fas fa-check"></i>
+        </button>
+    </div>
+
+    <div id="resultsContainer" class="results-container">
+        <div class="score-display" id="scoreDisplay">0%</div>
+        <div class="score-message" id="scoreMessage">Calcul en cours...</div>
+        <div class="results-actions">
+            <a href="/module/{{ module.name.lower() }}" class="btn">
+                <i class="fas fa-redo"></i> Refaire le module
+            </a>
+            <a href="/dashboard" class="btn btn-secondary">
+                <i class="fas fa-home"></i> Retour au Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentQuestionIndex = 0;
+let totalQuestions = {{ quizzes|length }};
+let answers = {};
+let quizData = [];
+
+// Initialiser les données du quiz
+{% for quiz in quizzes %}
+quizData.push({
+    id: {{ quiz.id }},
+    correct: '{{ quiz.correct_answer }}'
+});
+{% endfor %}
+
+function showQuestion(index) {
+    // Cacher toutes les questions
+    document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    
+    // Afficher la question courante
+    document.querySelectorAll('.question-card')[index].classList.add('active');
+    
+    // Mettre à jour les contrôles
+    document.getElementById('currentQuestion').textContent = index + 1;
+    document.getElementById('prevBtn').style.display = index > 0 ? 'inline-block' : 'none';
+    
+    if (index === totalQuestions - 1) {
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('finishBtn').style.display = 'inline-block';
+    } else {
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        document.getElementById('finishBtn').style.display = 'none';
+    }
+    
+    // Mettre à jour la barre de progression
+    const progress = ((index + 1) / totalQuestions) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    
+    // Vérifier si une réponse est sélectionnée
+    checkAnswerSelected();
+}
+
+function selectOption(element, questionIndex) {
+    const questionCard = element.closest('.question-card');
+    const quizId = parseInt(questionCard.dataset.quizId);
+    const answer = element.dataset.answer;
+    
+    // Désélectionner les autres options
+    questionCard.querySelectorAll('.option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    // Sélectionner l'option cliquée
+    element.classList.add('selected');
+    
+    // Enregistrer la réponse
+    answers[quizId] = answer;
+    
+    // Activer le bouton suivant/terminer
+    checkAnswerSelected();
+}
+
+function checkAnswerSelected() {
+    const currentQuizId = quizData[currentQuestionIndex].id;
+    const hasAnswer = answers.hasOwnProperty(currentQuizId);
+    
+    document.getElementById('nextBtn').disabled = !hasAnswer;
+    document.getElementById('finishBtn').disabled = !hasAnswer;
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < totalQuestions - 1) {
+        currentQuestionIndex++;
+        showQuestion(currentQuestionIndex);
+    }
+}
+
+function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        showQuestion(currentQuestionIndex);
+    }
+}
+
+async function finishQuiz() {
+    // Soumettre toutes les réponses
+    let correctAnswers = 0;
+    
+    for (let i = 0; i < quizData.length; i++) {
+        const quizId = quizData[i].id;
+        const userAnswer = answers[quizId];
+        const correctAnswer = quizData[i].correct;
+        
+        try {
+            const response = await axios.post(`/api/quiz/${quizId}/submit`, {
+                answer: userAnswer
+            });
+            
+            if (response.data.correct) {
+                correctAnswers++;
+            }
+        } catch (error) {
+            console.error('Erreur lors de la soumission:', error);
+        }
+    }
+    
+    // Afficher les résultats
+    showResults(correctAnswers, totalQuestions);
+}
+
+function showResults(correct, total) {
+    const score = Math.round((correct / total) * 100);
+    
+    // Cacher le quiz et afficher les résultats
+    document.getElementById('quizContainer').style.display = 'none';
+    document.querySelector('.quiz-controls').style.display = 'none';
+    document.getElementById('resultsContainer').style.display = 'block';
+    
+    // Afficher le score
+    document.getElementById('scoreDisplay').textContent = score + '%';
+    
+    // Message personnalisé selon le score
+    let message = '';
+    if (score >= 90) {
+        message = `Excellent ! Vous maîtrisez parfaitement le sujet. (${correct}/${total} bonnes réponses)`;
+    } else if (score >= 70) {
+        message = `Très bien ! Vous avez une bonne compréhension du sujet. (${correct}/${total} bonnes réponses)`;
+    } else if (score >= 50) {
+        message = `Pas mal ! Il y a encore quelques points à revoir. (${correct}/${total} bonnes réponses)`;
+    } else {
+        message = `Il serait bon de revoir le module avant de continuer. (${correct}/${total} bonnes réponses)`;
+    }
+    
+    document.getElementById('scoreMessage').textContent = message;
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+    // Ajouter les événements de clic sur les options
+    document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', function() {
+            selectOption(this, currentQuestionIndex);
+        });
+    });
+    
+    // Afficher la première question
+    showQuestion(0);
+});
+</script>
+{% endblock %}
+

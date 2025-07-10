@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Path Traversal - Introduction - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-folder-open"></i> Module Path Traversal
+        </h1>
+        <h2 style="color: #ffffff;">1. Introduction au Path Traversal</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-info-circle"></i> Qu'est-ce que le Path Traversal ?</h3>
+        <p>
+            Le Path Traversal, aussi appelé Directory Traversal, est une vulnérabilité qui permet à un attaquant 
+            d'accéder à des fichiers et répertoires stockés en dehors du répertoire racine de l'application web. 
+            Cette attaque exploite une validation insuffisante des noms de fichiers fournis par l'utilisateur.
+        </p>
+        <p>
+            L'attaquant peut ainsi lire des fichiers arbitraires sur le serveur, incluant le code de l'application, 
+            les données, et les fichiers système critiques.
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-code"></i> Exemple d'attaque</h3>
+        <p>
+            Voici un exemple typique de path traversal :
+        </p>
+        <div class="code-block">
+// URL normale<br>
+http://example.com/download?file=report.pdf<br><br>
+// Attaque path traversal<br>
+http://example.com/download?file=../../../etc/passwd<br>
+http://example.com/download?file=..\..\..\..\windows\system32\drivers\etc\hosts
+        </div>
+        <p>
+            La séquence "../" permet de remonter dans l'arborescence des répertoires pour accéder à des fichiers 
+            situés en dehors du répertoire autorisé.
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-exclamation-triangle"></i> Impact potentiel</h3>
+        <p>
+            Les attaques de path traversal peuvent avoir des conséquences graves :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Lecture de fichiers de configuration sensibles</li>
+            <li>Accès aux mots de passe et clés de chiffrement</li>
+            <li>Exposition du code source de l'application</li>
+            <li>Lecture des logs système</li>
+            <li>Accès aux fichiers de base de données</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/path_traversal" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Accueil du module
+        </a>
+        
+        <div class="page-indicator">
+            Page 1 sur 3
+        </div>
+        
+        <a href="/module/path_traversal/page/2" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

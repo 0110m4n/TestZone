@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}XSS - Introduction - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .warning-box {
+        background: rgba(255, 193, 7, 0.2);
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+        color: #ffc107;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-code"></i> Module XSS
+        </h1>
+        <h2 style="color: #ffffff;">1. Introduction au Cross-Site Scripting</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-info-circle"></i> Qu'est-ce que le XSS ?</h3>
+        <p>
+            Le Cross-Site Scripting (XSS) est une vulnérabilité de sécurité web qui permet à un attaquant d'injecter 
+            du code malveillant (généralement JavaScript) dans des pages web consultées par d'autres utilisateurs. 
+            Cette vulnérabilité survient lorsqu'une application web inclut des données non fiables dans une page web 
+            sans validation ou encodage approprié.
+        </p>
+        <p>
+            Le XSS est l'une des vulnérabilités les plus courantes dans les applications web et figure régulièrement 
+            dans le top 10 de l'OWASP (Open Web Application Security Project).
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-exclamation-triangle"></i> Pourquoi le XSS est-il dangereux ?</h3>
+        <p>
+            Les attaques XSS peuvent permettre à un attaquant de :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li>Voler les cookies de session et usurper l'identité d'un utilisateur</li>
+            <li>Rediriger l'utilisateur vers des sites malveillants</li>
+            <li>Modifier le contenu de la page web</li>
+            <li>Enregistrer les frappes clavier (keylogging)</li>
+            <li>Exécuter des actions au nom de l'utilisateur</li>
+            <li>Accéder aux données sensibles stockées dans le navigateur</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-code"></i> Exemple simple de XSS</h3>
+        <p>
+            Voici un exemple basique d'une vulnérabilité XSS :
+        </p>
+        <div class="code-block">
+&lt;!-- Page web vulnérable --&gt;<br>
+&lt;p&gt;Bonjour &lt;?php echo $_GET['nom']; ?&gt;&lt;/p&gt;
+        </div>
+        <p>
+            Si un utilisateur visite l'URL suivante :
+        </p>
+        <div class="code-block">
+http://example.com/page.php?nom=&lt;script&gt;alert('XSS')&lt;/script&gt;
+        </div>
+        <p>
+            Le code JavaScript sera exécuté dans le navigateur de l'utilisateur, affichant une popup avec "XSS".
+        </p>
+        
+        <div class="warning-box">
+            <strong><i class="fas fa-exclamation-triangle"></i> Attention :</strong> 
+            Ceci est un exemple à des fins éducatives uniquement. N'utilisez jamais ces techniques sur des sites 
+            web sans autorisation explicite.
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-history"></i> Contexte historique</h3>
+        <p>
+            Le terme "Cross-Site Scripting" a été inventé par Microsoft en janvier 2000. Initialement appelé 
+            "Cross-Site Scripting", l'acronyme CSS était déjà utilisé pour "Cascading Style Sheets", 
+            d'où l'adoption de "XSS".
+        </p>
+        <p>
+            Les premières vulnérabilités XSS ont été découvertes dans les années 1990, mais elles sont devenues 
+            plus préoccupantes avec l'essor des applications web dynamiques et d'AJAX.
+        </p>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/xss" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Accueil du module
+        </a>
+        
+        <div class="page-indicator">
+            Page 1 sur 4
+        </div>
+        
+        <a href="/module/xss/page/2" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

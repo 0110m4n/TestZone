@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}LFI - Introduction - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-file-alt"></i> Module LFI
+        </h1>
+        <h2 style="color: #ffffff;">1. Introduction au Local File Inclusion</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-info-circle"></i> Qu'est-ce que le LFI ?</h3>
+        <p>
+            Le Local File Inclusion (LFI) est une vulnérabilité qui permet à un attaquant d'inclure des fichiers 
+            locaux présents sur le serveur web dans l'exécution d'une page. Cette vulnérabilité survient lorsqu'une 
+            application utilise des entrées utilisateur pour construire des chemins de fichiers sans validation appropriée.
+        </p>
+        <p>
+            Le LFI peut permettre à un attaquant de lire des fichiers sensibles du système, d'exécuter du code 
+            arbitraire, ou même d'obtenir un accès complet au serveur dans certains cas.
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-code"></i> Exemple de code vulnérable</h3>
+        <p>
+            Voici un exemple typique de code PHP vulnérable au LFI :
+        </p>
+        <div class="code-block">
+&lt;?php<br>
+$page = $_GET['page'];<br>
+include($page . '.php');<br>
+?&gt;
+        </div>
+        <p>
+            Dans cet exemple, l'attaquant peut manipuler le paramètre 'page' pour inclure des fichiers arbitraires :
+        </p>
+        <div class="code-block">
+http://example.com/index.php?page=../../../etc/passwd
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-exclamation-triangle"></i> Fichiers cibles courants</h3>
+        <p>
+            Les attaquants ciblent généralement ces fichiers lors d'attaques LFI :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>/etc/passwd</strong> - Liste des utilisateurs système (Linux)</li>
+            <li><strong>/etc/shadow</strong> - Mots de passe hashés (Linux)</li>
+            <li><strong>/var/log/apache2/access.log</strong> - Logs du serveur web</li>
+            <li><strong>/proc/self/environ</strong> - Variables d'environnement</li>
+            <li><strong>C:\Windows\System32\drivers\etc\hosts</strong> - Fichier hosts (Windows)</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/lfi" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Accueil du module
+        </a>
+        
+        <div class="page-indicator">
+            Page 1 sur 3
+        </div>
+        
+        <a href="/module/lfi/page/2" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

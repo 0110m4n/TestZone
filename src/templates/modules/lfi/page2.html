@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}LFI - Techniques d'exploitation - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .content-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section h3 {
+        color: #00ff88;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        color: #00ff88;
+        overflow-x: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 3rem;
+    }
+
+    .page-indicator {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <h1 style="color: #00ff88; margin-bottom: 0.5rem;">
+            <i class="fas fa-file-alt"></i> Module LFI
+        </h1>
+        <h2 style="color: #ffffff;">2. Techniques d'exploitation LFI</h2>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-tools"></i> Path Traversal basique</h3>
+        <p>
+            La technique la plus courante consiste à utiliser "../" pour remonter dans l'arborescence :
+        </p>
+        <div class="code-block">
+../../../etc/passwd<br>
+..\..\..\..\windows\system32\drivers\etc\hosts<br>
+....//....//....//etc/passwd
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-code"></i> Techniques de contournement</h3>
+        <p>
+            Plusieurs techniques permettent de contourner les protections :
+        </p>
+        <p><strong>Encodage URL :</strong></p>
+        <div class="code-block">
+%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd<br>
+..%252f..%252f..%252fetc%252fpasswd
+        </div>
+        
+        <p><strong>Null byte injection :</strong></p>
+        <div class="code-block">
+../../../etc/passwd%00<br>
+../../../etc/passwd%00.jpg
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3><i class="fas fa-fire"></i> LFI vers RCE</h3>
+        <p>
+            Dans certains cas, le LFI peut être escaladé vers une exécution de code à distance :
+        </p>
+        <ul style="color: rgba(255, 255, 255, 0.9); margin-left: 2rem;">
+            <li><strong>Log Poisoning :</strong> Injection de code dans les logs</li>
+            <li><strong>Session files :</strong> Manipulation des fichiers de session</li>
+            <li><strong>Upload + LFI :</strong> Combinaison avec upload de fichier</li>
+            <li><strong>Wrapper PHP :</strong> Utilisation de php://input, data://</li>
+        </ul>
+    </div>
+
+    <div class="navigation">
+        <a href="/module/lfi/page/1" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Page précédente
+        </a>
+        
+        <div class="page-indicator">
+            Page 2 sur 3
+        </div>
+        
+        <a href="/module/lfi/page/3" class="btn">
+            Page suivante <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

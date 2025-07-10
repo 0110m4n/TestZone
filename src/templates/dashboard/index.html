@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TestZone{% endblock %}
+
+{% block extra_css %}
+<style>
+    .welcome-section { text-align: center; margin-bottom: 3rem; }
+    .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+    .module-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 2rem; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+    .module-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,255,136,0.2); border-color: #00ff88; }
+    .module-icon { font-size: 3rem; margin-bottom: 1rem; color: #00ff88; }
+    .module-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; color: #ffffff; }
+    .module-description { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; line-height: 1.4; }
+    .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 1rem; }
+    .progress-fill { height: 100%; background: linear-gradient(45deg, #00ff88, #00cc6a); transition: width 0.3s; }
+    .progress-text { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 1rem; }
+    .quiz-score { background: rgba(0,255,136,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: #00ff88; margin-bottom: 1rem; display: inline-block; }
+    .stats-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 10px; padding: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+    .stat-number { font-size: 2rem; font-weight: bold; color: #00ff88; margin-bottom: 0.5rem; }
+    .stat-label { color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+    .module-status { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.8rem; color: #00ff88; display: inline-block; margin-top: 0.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">
+        Bienvenue, <span style="color: #00ff88;">{{ current_user.username }}</span> !
+    </h1>
+    <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.8);">
+        Prêt à apprendre les techniques de pentest ?
+    </p>
+</div>
+
+<div class="stats-section" id="statsSection">
+    <div class="stat-card">
+        <div class="stat-number" id="completedModules">0/4</div>
+        <div class="stat-label">Modules terminés</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="averageScore">0%</div>
+        <div class="stat-label">Score moyen</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="globalProgress">0%</div>
+        <div class="stat-label">Progression globale</div>
+    </div>
+</div>
+
+<h2 style="margin-bottom: 2rem; color: #ffffff;">
+    <i class="fas fa-graduation-cap"></i> Modules d'apprentissage
+</h2>
+
+<div class="modules-grid">
+    <!-- XSS -->
+    <a href="/module/xss" class="module-card">
+        <div class="module-icon"><i class="fas fa-code"></i></div>
+        <div class="module-title">XSS</div>
+        <div class="module-description">Apprenez les techniques de Cross-Site Scripting et comment les prévenir.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%" id="xss-progress"></div></div>
+        <div class="progress-text" id="xss-text">Commencer le module</div>
+        <div class="module-status">4 pages + Quiz</div>
+    </a>
+    <!-- LFI -->
+    <a href="/module/lfi" class="module-card">
+        <div class="module-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="module-title">LFI</div>
+        <div class="module-description">Découvrez les vulnérabilités Local File Inclusion et leurs exploitations.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%" id="lfi-progress"></div></div>
+        <div class="progress-text" id="lfi-text">Commencer le module</div>
+        <div class="module-status">3 pages + Quiz</div>
+    </a>
+    <!-- IDOR -->
+    <a href="/module/idor" class="module-card">
+        <div class="module-icon"><i class="fas fa-key"></i></div>
+        <div class="module-title">IDOR</div>
+        <div class="module-description">Maîtrisez les failles Insecure Direct Object References.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%" id="idor-progress"></div></div>
+        <div class="progress-text" id="idor-text">Commencer le module</div>
+        <div class="module-status">3 pages + Quiz</div>
+    </a>
+    <!-- Path Traversal -->
+    <a href="/module/path_traversal" class="module-card">
+        <div class="module-icon"><i class="fas fa-folder-open"></i></div>
+        <div class="module-title">Path Traversal</div>
+        <div class="module-description">Explorez les attaques de traversée de répertoires.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%" id="path-progress"></div></div>
+        <div class="progress-text" id="path-text">Commencer le module</div>
+        <div class="module-status">3 pages + Quiz</div>
+    </a>
+</div>
+
+<div class="text-center" style="margin-top: 3rem;">
+    <a href="/sandbox" class="btn" style="font-size: 1.2rem; padding: 1rem 2rem;">
+        <i class="fas fa-cube"></i> Accéder à la Sandbox
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadDashboardData() {
+    try {
+        const response = await axios.get('/api/progress');
+        const modules = response.data;
+        updateStats(modules);
+        updateModuleProgress(modules);
+    } catch (error) {
+        console.error('Erreur lors du chargement des données:', error);
+    }
+}
+function updateStats(modules) {
+    const completedModules = modules.filter(m => m.completed).length;
+    const totalModules = modules.length;
+    const averageScore = modules.filter(m => m.quiz_score !== null).reduce((acc, m, _, arr) => acc + m.quiz_score / arr.length, 0);
+    document.getElementById('completedModules').textContent = `${completedModules}/${totalModules}`;
+    document.getElementById('averageScore').textContent = `${Math.round(averageScore) || 0}%`;
+    document.getElementById('globalProgress').textContent = `${Math.round((completedModules / totalModules) * 100)}%`;
+}
+function updateModuleProgress(modules) {
+    const moduleMapping = {
+        'XSS': 'xss',
+        'LFI': 'lfi',
+        'IDOR': 'idor',
+        'PATH_TRAVERSAL': 'path'
+    };
+    modules.forEach(module => {
+        const moduleKey = moduleMapping[module.module_name];
+        if (moduleKey) {
+            const progress = Math.round((module.current_page / module.total_pages) * 100);
+            const progressBar = document.getElementById(`${moduleKey}-progress`);
+            const progressText = document.getElementById(`${moduleKey}-text`);
+            if (progressBar) { progressBar.style.width = `${progress}%`; }
+            if (progressText) {
+                if (module.completed) {
+                    progressText.innerHTML = `<strong style="color: #00ff88;">Module terminé</strong>`;
+                    if (module.quiz_score !== null) {
+                        progressText.innerHTML += ` - Score: ${Math.round(module.quiz_score)}%`;
+                    }
+                } else {
+                    progressText.textContent = `Page ${module.current_page} sur ${module.total_pages}`;
+                }
+            }
+        }
+    });
+}
+document.addEventListener('DOMContentLoaded', loadDashboardData);
+</script>
+{% endblock %}
